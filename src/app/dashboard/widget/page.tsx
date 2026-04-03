@@ -81,9 +81,9 @@ export default function WidgetCustomizationPage() {
                 </div>
               </div>
 
-              <div className="relative bg-slate-200 dark:bg-slate-800 h-[600px] rounded-2xl border-4 border-white dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col">
+              <div className="relative bg-slate-200 dark:bg-slate-800 h-[600px] max-w-full rounded-2xl border-4 border-white dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col">
                 {/* Mock App Interface Background */}
-                <div className="absolute inset-0 p-6 space-y-4 opacity-30 select-none pointer-events-none">
+                <div className="absolute inset-0 p-6 space-y-4 opacity-30 select-none pointer-events-none hidden sm:block">
                   <div className="h-8 w-1/3 bg-slate-400 dark:bg-slate-600 rounded"></div>
                   <div className="h-4 w-full bg-slate-300 dark:bg-slate-700 rounded"></div>
                   <div className="h-4 w-2/3 bg-slate-300 dark:bg-slate-700 rounded"></div>
@@ -94,9 +94,9 @@ export default function WidgetCustomizationPage() {
                 </div>
 
                 {/* Actual Chat Widget Preview */}
-                <div className="mt-auto m-6 flex flex-col items-end gap-4 relative z-10">
+                <div className="mt-auto m-2 sm:m-6 flex flex-col items-end gap-4 relative z-10">
                   {/* Chat Bubble Container */}
-                  <div className="w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800">
+                  <div className="w-[calc(100vw-3rem)] sm:w-80 max-w-full bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800">
                     {/* Widget Header */}
                     <div className="p-4 flex items-center gap-3 bg-primary text-white">
                       <div className="size-10 rounded-full bg-white/20 flex items-center justify-center">

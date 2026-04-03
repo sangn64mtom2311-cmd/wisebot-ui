@@ -1,9 +1,9 @@
 export default function ChatbotPlaygroundPage() {
   return (
-    <main className="flex-1 flex overflow-hidden">
+    <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
       {/* Chat Window */}
-      <div className="flex-1 flex flex-col min-w-0 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800">
-        <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+      <div className="flex-1 flex flex-col min-w-0 bg-white dark:bg-slate-950 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-800 h-full lg:h-auto">
+        <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-4">
             <span className="font-semibold">Conversation</span>
             <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full">Model: GPT-4o</span>
@@ -67,9 +67,9 @@ export default function ChatbotPlaygroundPage() {
       </div>
 
       {/* Right Sidebars Container */}
-      <div className="w-80 flex flex-col shrink-0 bg-background-light dark:bg-background-dark">
+      <div className="w-full lg:w-80 flex flex-col shrink-0 bg-background-light dark:bg-background-dark h-[50vh] lg:h-full overflow-y-auto">
         {/* Source Citations */}
-        <div className="flex-1 flex flex-col overflow-hidden border-b border-slate-200 dark:border-slate-800">
+        <div className="flex-1 flex flex-col overflow-hidden min-h-[300px] border-b border-slate-200 dark:border-slate-800">
           <div className="p-4 bg-slate-50 dark:bg-slate-900 font-semibold text-xs uppercase tracking-wider text-slate-500 flex items-center gap-2">
             <span className="material-symbols-outlined text-sm">link</span>
             Source Citations
