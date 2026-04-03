@@ -1,6 +1,61 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SignInPage() {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.message || "Invalid credentials. Please try again.");
+      }
+
+      const data = await response.json();
+
+      // Store auth data
+      // Expecting { token: string, user: { id, name, email, role: 'admin' | 'user' } }
+      localStorage.setItem("authToken", data.token || "dummy-token");
+      localStorage.setItem("userRole", data.user?.role || "user");
+      localStorage.setItem("userName", data.user?.name || formData.email.split('@')[0]);
+
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="w-full flex flex-col items-center justify-center p-4">
       {/* Logo Section */}
@@ -18,14 +73,23 @@ export default function SignInPage() {
           <p className="text-slate-500 dark:text-slate-400 text-sm">Welcome back! Please enter your details.</p>
         </div>
 
-        <form className="space-y-5">
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          {error && (
+            <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm p-3 rounded-lg border border-red-200 dark:border-red-800">
+              {error}
+            </div>
+          )}
           {/* Email Input */}
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Email address</label>
             <input
+                name="email"
               className="w-full h-12 px-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
               placeholder="name@company.com"
               type="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
             />
           </div>
 
@@ -37,9 +101,13 @@ export default function SignInPage() {
             </div>
             <div className="relative">
               <input
+                name="password"
                 className="w-full h-12 px-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                 placeholder="••••••••"
                 type="password"
+                required
+                value={formData.password}
+                onChange={handleChange}
               />
               <button className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" type="button">
                 <span className="material-symbols-outlined text-[20px]">visibility</span>
@@ -58,8 +126,12 @@ export default function SignInPage() {
           </div>
 
           {/* Submit Button */}
-          <button className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2" type="submit">
-            Sign In
+          <button
+            disabled={isLoading}
+            className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+            type="submit"
+          >
+            {isLoading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 

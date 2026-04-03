@@ -3,15 +3,24 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const navigation = [
+import { useEffect, useState } from "react";
+
+interface NavItem {
+  name: string;
+  href: string;
+  icon: string;
+  adminOnly?: boolean;
+}
+
+const navigation: NavItem[] = [
   { name: "Dashboard", href: "/dashboard", icon: "dashboard" },
   { name: "Knowledge Base", href: "/dashboard/knowledge-base", icon: "database" },
   { name: "Chatbot Playground", href: "/dashboard/chatbot", icon: "forum" },
-  { name: "Widget Customization", href: "/dashboard/widget", icon: "palette" },
-  { name: "Analytics", href: "/dashboard/analytics", icon: "bar_chart" },
-  { name: "Team Management", href: "/dashboard/team", icon: "group" },
-  { name: "API Keys", href: "/dashboard/api-keys", icon: "key" },
-  { name: "Billing", href: "/dashboard/billing", icon: "credit_card" },
+  { name: "Widget Customization", href: "/dashboard/widget", icon: "palette", adminOnly: true },
+  { name: "Analytics", href: "/dashboard/analytics", icon: "bar_chart", adminOnly: true },
+  { name: "Team Management", href: "/dashboard/team", icon: "group", adminOnly: true },
+  { name: "API Keys", href: "/dashboard/api-keys", icon: "key", adminOnly: true },
+  { name: "Billing", href: "/dashboard/billing", icon: "credit_card", adminOnly: true },
   { name: "Settings", href: "/dashboard/settings", icon: "settings" },
 ];
 
@@ -21,6 +30,18 @@ interface SidebarProps {
 
 export default function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname();
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Only access localStorage in the browser
+    if (typeof window !== "undefined") {
+      setRole(localStorage.getItem("userRole") || "user");
+    }
+  }, []);
+
+  const filteredNavigation = navigation.filter(
+    (item) => !item.adminOnly || role === "admin"
+  );
 
   return (
     <aside className="w-64 h-full border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col shrink-0 overflow-y-auto relative">
@@ -45,7 +66,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
           )}
         </div>
         <nav className="space-y-1 flex-1">
-          {navigation.map((item) => {
+          {filteredNavigation.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link

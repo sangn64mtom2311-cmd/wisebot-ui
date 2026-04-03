@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function DashboardLayout({
   children,
@@ -10,12 +10,29 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        router.push("/sign-in");
+      } else {
+        setIsLoading(false);
+      }
+    }
+  }, [router]);
 
   // Close sidebar on route change on mobile
   useEffect(() => {
     setIsSidebarOpen(false);
   }, [pathname]);
+
+  if (isLoading) {
+    return <div className="flex h-screen items-center justify-center bg-background-light dark:bg-background-dark">Loading...</div>;
+  }
 
   return (
     <div className="flex h-screen overflow-hidden text-slate-900 dark:text-slate-100 relative">
